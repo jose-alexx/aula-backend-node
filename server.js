@@ -12,8 +12,16 @@ app.listen(3333, () => { // pede para ficar esciutando
 })
 
 app.get("/alunos", (request, response) => {
-    // const data = request.query
+    const {uuid} = request.query
 
+    if(uuid) {
+        const pos = alunos.findIndex(aluno => aluno.uuid == uuid)
+
+        if(uuid != -1) {
+            const aluno = alunos[pos]
+            return response.json(aluno)
+        }
+    }
     return response.json(alunos) // Devolve o json com o array alunos
 })
 
@@ -46,7 +54,6 @@ app.delete("/alunos/:uuid", (request, response) => {
         alunos.splice(pos, 1)
 
         return response.status(201).json(aluno)
-    
     }
 })
 
