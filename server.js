@@ -1,4 +1,4 @@
-const crypto = require("crypto")
+const {randomUUID} = require("crypto")
 
 const express = require("express")
 const app = express()
@@ -7,7 +7,7 @@ app.use(express.json())
 
 const alunos = []
 
-app.listen(3333, () => { // pede para ficar esciutando
+app.listen(3333, () => { 
     console.log("Servidor iniciado!")
 })
 
@@ -17,17 +17,16 @@ app.get("/alunos", (request, response) => {
     if(uuid) {
         const pos = alunos.findIndex(aluno => aluno.uuid == uuid)
 
-        if(uuid != -1) {
-            const aluno = alunos[pos]
-            return response.json(aluno)
+        if(pos >= 0) {
+            return response.json(alunos[pos])
         }
     }
-    return response.json(alunos) // Devolve o json com o array alunos
+    return response.json(alunos)
 })
 
 app.post("/alunos", (request, response) => {
     const { nome, email } = request.body
-    const uuid = crypto.randomUUID()
+    const uuid = randomUUID()
 
     const aluno = {
         uuid,
