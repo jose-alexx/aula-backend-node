@@ -41,7 +41,7 @@ app.post("/alunos", (request, response) => {
     return response.status(201).json(aluno)
 })
 
-app.delete("/alunos/:uuid", (request, response) => {
+app.delete("/alunos/:uuid", (request, response) => { 
     const { uuid } = request.params
 
     // Encontra o índice do aluno com o UUID correspondente
