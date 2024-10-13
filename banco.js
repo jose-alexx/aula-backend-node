@@ -26,14 +26,18 @@ async function criarTabela() {
     await banco.exec(tabela);
 }
 
-async function incerir() {
+async function incerir(aluno) {
     const banco = await sqlConection();
     
-    const aluno = `
-        INSERT INTO alunos (uuid, nome, email) VALUES ('123', 'joao', 'joao@gmail.com');
-    `;
-    
-    await banco.exec(aluno);
+    await banco.run('INSERT INTO alunos (uuid, nome, email) VALUES (?, ?, ?);', aluno.uuid, aluno.nome, aluno.email);
 }
 
-incerir();
+criarTabela();
+
+const aluno = {
+    uuid: '123',
+    nome: 'João',
+    email: 'joao@gmail.com'
+}
+
+incerir(aluno);
