@@ -1,3 +1,4 @@
+export
 /** Modificação de texte */
 
 const {randomUUID} = require("crypto")
