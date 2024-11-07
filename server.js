@@ -1,12 +1,12 @@
-export
 /** Modificação de texte */
 
 const {randomUUID} = require("crypto")
-
+const Banco = require("./banco")
 const express = require("express")
 const app = express()
 
 app.use(express.json())
+const banco = new Banco();
 
 const alunos = []
 
@@ -14,9 +14,10 @@ app.listen(3333, () => {
     console.log("Servidor iniciado!")
 })
 
-app.get("/alunos", (request, response) => {
+app.get("/alunos",  async (request, response) => {
     const {uuid} = request.query
 
+    /*
     if(uuid) {
         const pos = alunos.findIndex(aluno => aluno.uuid == uuid)
 
@@ -24,7 +25,12 @@ app.get("/alunos", (request, response) => {
             return response.json(alunos[pos])
         }
     }
-    return response.json(alunos)
+    */
+
+    const listarAlunos = await banco.listar();
+    console.log(listarAlunos);
+    return response.json(listarAlunos);
+    // return response.json(alunos)
 })
 
 app.post("/alunos", (request, response) => {
@@ -37,32 +43,37 @@ app.post("/alunos", (request, response) => {
         email
     };
 
-    alunos.push(aluno)
+    // alunos.push(aluno)
+
+    banco.incerir(aluno);
 
     return response.status(201).json(aluno)
 })
 
-app.delete("/alunos/:uuid", (request, response) => { 
-    const { uuid } = request.params
+app.delete("/alunos/:id", (request, response) => { 
+    const { id } = request.params
 
     // Encontra o índice do aluno com o UUID correspondente
-    const pos = alunos.findIndex(aluno => aluno.uuid == uuid)
 
-    if (pos < 0) {
+    const pos = alunos.findIndex(aluno => aluno.uuid == uuid)
+    /*
+     if (pos < 0) {
         // Se o aluno não for encontrado, retorna um erro 404
-        return response.status(404).json({ message: "O Aluno não foi encontrado" })
+       return response.status(404).json({ message: "O Aluno não foi encontrado" })
     } else {
         const aluno = alunos[pos]
         alunos.splice(pos, 1)
-
-        return response.status(201).json(aluno)
     }
+        */
+       banco.remover(id);
+       return response.status(201).json({message: "Removendo aluno"})
 })
 
-app.put("/alunos/:uuid", (request, response) => {
-    const { uuid } = request.params
+app.put("/alunos/:id", (request, response) => {
+    const { id } = request.params
     const { nome, email } = request.body
 
+    /*
     const pos = alunos.findIndex(aluno => aluno.uuid == uuid)
 
     if (pos < 0) {
@@ -74,8 +85,16 @@ app.put("/alunos/:uuid", (request, response) => {
             nome,
             email
         }
-        return response.status(201).json(alunos[pos])
+}
+            */
+
+    const aluno = {
+        id,
+        nome,
+        email
     }
+    banco.atualizar(aluno);
+        // return response.status(201).json(alunos[pos])
+    return response.json();
+    
 })
-
-
