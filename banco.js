@@ -59,6 +59,14 @@ class Banco {
         // console.log(result);
         return result;
     }
+
+    async buscar(id) {
+        const banco = await this.sqlConection();
+        const result = await banco.all('SELECT * FROM alunos WHERE id  = ?', id);
+    
+        // console.log(result);
+        return result;
+    }
 }
 // criarTabela();
 // remover(4);

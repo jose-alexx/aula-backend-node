@@ -27,6 +27,7 @@ app.get("/alunos",  async (request, response) => {
     }
     */
 
+
     const listarAlunos = await banco.listar();
     console.log(listarAlunos);
     return response.json(listarAlunos);
@@ -50,12 +51,12 @@ app.post("/alunos", (request, response) => {
     return response.status(201).json(aluno)
 })
 
-app.delete("/alunos/:id", (request, response) => { 
+app.delete("/alunos/:id", async (request, response) => { 
     const { id } = request.params
 
     // Encontra o índice do aluno com o UUID correspondente
 
-    const pos = alunos.findIndex(aluno => aluno.uuid == uuid)
+    // const pos = alunos.findIndex(aluno => aluno.uuid == uuid)
     /*
      if (pos < 0) {
         // Se o aluno não for encontrado, retorna um erro 404
@@ -65,6 +66,12 @@ app.delete("/alunos/:id", (request, response) => {
         alunos.splice(pos, 1)
     }
         */
+       const aluno = await banco.buscar(id);
+
+       if (!aluno) {
+        return response.status(404).json({ message: "O Aluno não foi encontrado" })
+       }
+
        banco.remover(id);
        return response.status(201).json({message: "Removendo aluno"})
 })
